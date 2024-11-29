@@ -91,14 +91,14 @@ const HomePage = ({ navigation, route }) => {
 
        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScrollContainer}>
          <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('DietPlans')}>
-           <Image source={require('../../../assets/png/nutrition.jpg')} style={styles.horizontalCardImage} />
+           <Image source={require('../../assets/png/nutrition.jpg')} style={styles.horizontalCardImage} />
            <View style={styles.horizontalCardOverlay}>
              <Text style={styles.horizontalCardTitle}>Certified Dietitians</Text>
            </View>
          </TouchableOpacity>
 
          <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('SupplementStore')}>
-           <Image source={require('../../../assets/png/suppliment.jpg')} style={styles.horizontalCardImage} />
+           <Image source={require('../../assets/png/suppliment.jpg')} style={styles.horizontalCardImage} />
            <View style={styles.horizontalCardOverlay}>
              <Text style={styles.horizontalCardTitle}>Alpha Supplement Store</Text>
            </View>

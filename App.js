@@ -62,7 +62,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRoute } from '@react-navigation/native';
-
+import { NavigationContainer } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -163,10 +163,11 @@ const { username, userId } = route.params;
 
 export default function App() {
     const [fontsLoaded] = useFonts({
-      'CustomFont': require('../assets/fonts/SpaceMono-Regular.ttf'),
-      'CustomFont-Bold': require('../assets/fonts/SpaceMono-Bold.ttf'),
+      'CustomFont': require('./assets/fonts/SpaceMono-Regular.ttf'),
+      'CustomFont-Bold': require('./assets/fonts/SpaceMono-Bold.ttf'),
     });
   return (
+    <NavigationContainer>
       <Stack.Navigator screenOptions={{
          headerShown: false, // Hides the header for all screens
       }}>
@@ -219,7 +220,7 @@ export default function App() {
               <Stack.Screen name="CalorieCalculator" component={CalorieCalculator} />
 
       </Stack.Navigator>
-
+      </NavigationContainer>
     );
 }
 const styles = StyleSheet.create({

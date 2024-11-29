@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aps6mtr.fitealthy"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,6 +24,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2bc3b3b4-111d-403f-a5b3-3fa31d8fb51f"
+      }
     }
   }
 }
