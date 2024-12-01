@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, StatusBar  } from 'react-native';
+import React from 'react';
+
 
 import LoginScreen from './screens/loginAndSignup/LoginScreen';
 import TrainerLoginScreen from './screens/loginAndSignup/TrainerLoginScreen';
@@ -61,11 +61,10 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useRoute } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 // Bottom Tab Navigator for Homepage and Community
 function MainTabNavigator({ route }) {
@@ -167,10 +166,12 @@ export default function App() {
       'CustomFont-Bold': require('./assets/fonts/SpaceMono-Bold.ttf'),
     });
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{
-         headerShown: false, // Hides the header for all screens
-      }}>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{
+            headerShown: false, // Hides the header for all screens
+          }}>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Signup" component={SignupScreen} />
 
@@ -219,14 +220,9 @@ export default function App() {
               <Stack.Screen name="BodyFatCalculator" component={BodyFatCalculator} />
               <Stack.Screen name="CalorieCalculator" component={CalorieCalculator} />
 
-      </Stack.Navigator>
-      </NavigationContainer>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaView>
+      </SafeAreaProvider>
     );
 }
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    marginTop: 0,
-    backgroundColor: '#ff5', // Add background color to match app theme
-  },
-});
