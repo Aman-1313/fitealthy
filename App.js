@@ -66,6 +66,10 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
+import { enableScreens } from 'react-native-screens';
+
+enableScreens();
+
 // Bottom Tab Navigator for Homepage and Community
 function MainTabNavigator({ route }) {
 const { username, userId } = route.params;
