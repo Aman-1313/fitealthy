@@ -2,7 +2,7 @@
   "expo": {
     "name": "fitealthy",
     "slug": "fitealthy",
-    "version": "1.0.1",
+    "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -14,13 +14,22 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aps6mtr.fitealthy"
+      "bundleIdentifier": "com.aps6mtr.fitealthy",
+      "config": {
+        "googleMapsApiKey": "AIzaSyA2j64TE-eDVL98WHNlQKVMJjT9eogz2K8"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyA2j64TE-eDVL98WHNlQKVMJjT9eogz2K8"
+        }
+      },
+      "package": "com.aps6mtr.fitealthy"
     },
     "web": {
       "favicon": "./assets/favicon.png"

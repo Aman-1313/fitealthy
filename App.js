@@ -1,6 +1,10 @@
-import React from 'react';
+import 'react-native-get-random-values';
 
-
+import React,  { useState, useEffect } from 'react';
+import { AppState } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebaseConfig';
 import LoginScreen from './screens/loginAndSignup/LoginScreen';
 import TrainerLoginScreen from './screens/loginAndSignup/TrainerLoginScreen';
 import SignupScreen from './screens/loginAndSignup/SignupScreen';
@@ -16,9 +20,9 @@ import TrainerDashboardScreen from './screens/trainerScreens/TrainerDashboardScr
 import TrainerAccountInfoScreen from './screens/trainerScreens/TrainerAccountInfoScreen';
 import ClientInfoScreen from './screens/trainerScreens/ClientInfoScreen';
 import EditProfileTrainer from './screens/trainerScreens/EditProfileTrainer';
-
+import StripeWebViewScreen from './screens/clientScreens/StripeWebViewScreen';
 import Homepage from './screens/clientScreens/Homepage';
-
+import BookTest from './screens/clientScreens/BookTest';
 import DietPlans from './screens/clientScreens/DietPlans'; // Add these components
 import WorkoutTrainers from './screens/WorkoutTrainers';
 import ClothingStore from './screens/ClothingStore';
@@ -60,19 +64,21 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { NavigationContainer } from '@react-navigation/native';
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { enableScreens } from 'react-native-screens';
+import { NavigationContainer } from '@react-navigation/native';
+
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
 
 enableScreens();
 
 // Bottom Tab Navigator for Homepage and Community
 function MainTabNavigator({ route }) {
-const { username, userId } = route.params;
+
 
   return (
      <Tab.Navigator
@@ -82,12 +88,16 @@ const { username, userId } = route.params;
 
               if (route.name === 'HomeTab') {
                 iconName = focused ? 'home' : 'home-outline';
-              } else if (route.name === 'HealthyVideosScreen') {
-                 iconName = focused ? 'videocam' : 'videocam-outline';
-              } else if (route.name === 'TrackerTab') {
+              }
+//              else if (route.name === 'HealthyVideosScreen') {
+//                 iconName = focused ? 'videocam' : 'videocam-outline';
+//              }
+              else if (route.name === 'TrackerTab') {
                 iconName = focused ? 'fitness' : 'fitness-outline';
               } else if (route.name === 'PaidFeaturesScreen') {
                 iconName = focused ? 'document' : 'document-outline';
+              }else if (route.name === 'CommunityTab') {
+                iconName = focused ? 'people' : 'people-outline';
               }
 
 
@@ -102,13 +112,17 @@ const { username, userId } = route.params;
             name="HomeTab"
             component={Homepage}
             options={{ title: 'Home' }}
-            initialParams={{ username: username, userId: userId }}
           />
-          <Tab.Screen
+          {/*<Tab.Screen
               name="HealthyVideosScreen"
               component={HealthyVideosScreen}
               options={{ title: 'Media' }}
-            />
+          />*/}
+          <Tab.Screen
+              name="CommunityTab"
+              component={Community}
+              options={{ title: 'Community' }}
+          />
           <Tab.Screen
             name="PaidFeaturesScreen"
             component={PaidFeaturesScreen}
@@ -123,7 +137,7 @@ const { username, userId } = route.params;
         </Tab.Navigator>
   );
 }
-
+{/*
 function MainTabNavigatorTrainer({ route }) {
 const { username, userId } = route.params;
   return (
@@ -163,70 +177,172 @@ const { username, userId } = route.params;
         </Tab.Navigator>
   );
 }
+*/}
+// Login Stack
+function LoginStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+    </Stack.Navigator>
+  );
+}
+
+// Signup Stack
+function SignupStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Signup" component={SignupScreen} />
+      <Stack.Screen name="UserDataForm" component={UserDataForm} />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
-    const [fontsLoaded] = useFonts({
-      'CustomFont': require('./assets/fonts/SpaceMono-Regular.ttf'),
-      'CustomFont-Bold': require('./assets/fonts/SpaceMono-Bold.ttf'),
+  const [fontsLoaded] = useFonts({
+    'CustomFont': require('./assets/fonts/SpaceMono-Regular.ttf'),
+    'CustomFont-Bold': require('./assets/fonts/SpaceMono-Bold.ttf'),
+  });
+  const [appState, setAppState] = useState(AppState.currentState);
+  const [appData, setAppData] = useState({ username: '', loggedIn: false });
+  const [user, setUser] = useState(null);
+  const [initialRoute, setInitialRoute] = useState('LoginStack');
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const unsubscribeAuth = onAuthStateChanged(auth, async (authenticatedUser) => {
+      setUser(authenticatedUser);
+      if (authenticatedUser) {
+        const savedRoute = await AsyncStorage.getItem('@last_route');
+        if (savedRoute) setInitialRoute(savedRoute);
+      }
     });
+
+    loadAppState();
+
+    return () => {
+      subscription.remove();
+      unsubscribeAuth();
+    };
+  }, []);
+
+  const handleAppStateChange = async (nextAppState) => {
+    if (appState.match(/active/) && nextAppState === 'background') {
+      await saveAppState();
+      await saveLastRoute();
+    }
+    setAppState(nextAppState);
+  };
+
+  const saveAppState = async () => {
+    try {
+      await AsyncStorage.setItem('@app_state', JSON.stringify(appData));
+    } catch (e) {
+      console.error('Failed to save app state:', e);
+    }
+  };
+
+  const loadAppState = async () => {
+    try {
+      const savedState = await AsyncStorage.getItem('@app_state');
+      if (savedState) {
+        setAppData(JSON.parse(savedState));
+      }
+    } catch (e) {
+      console.error('Failed to load app state:', e);
+    }
+  };
+
+  const saveLastRoute = async () => {
+    try {
+      const currentRoute = await AsyncStorage.getItem('@current_route');
+      if (currentRoute) {
+        await AsyncStorage.setItem('@last_route', currentRoute);
+      }
+    } catch (e) {
+      console.error('Failed to save last route:', e);
+    }
+  };
+
+  const trackCurrentRoute = async (routeName) => {
+    try {
+      await AsyncStorage.setItem('@current_route', routeName);
+    } catch (e) {
+      console.error('Failed to track current route:', e);
+    }
+  };
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{
-            headerShown: false, // Hides the header for all screens
-          }}>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Signup" component={SignupScreen} />
-
-              <Stack.Screen name="TrainerLoginScreen" component={TrainerLoginScreen} />
-              <Stack.Screen name="TrainerSignupScreen" component={TrainerSignupScreen} />
-
-              <Stack.Screen name="TrainerDataForm" component={TrainerDataForm} />
-              <Stack.Screen name="TrainerDashboardScreen" component={TrainerDashboardScreen} />
-              <Stack.Screen name="TrainerAccountInfo" component={TrainerAccountInfoScreen} />
-              <Stack.Screen name="ClientInfoScreen" component={ClientInfoScreen} />
-              <Stack.Screen name="EditProfileTrainer" component={EditProfileTrainer} />
-
-              <Stack.Screen name="AssignDietScreen" component={AssignDietScreen} />
-              <Stack.Screen name="TrainerInteractionScreen" component={TrainerInteractionScreen} />
-              <Stack.Screen name="TrainerMealsComponent" component={TrainerMealsComponent} />
-
-              <Stack.Screen name="Main" component={MainTabNavigator} />
-              <Stack.Screen name="Main2" component={MainTabNavigatorTrainer} />
-
-              <Stack.Screen name="ClientList" component={ClientList} />
-              <Stack.Screen name="UserDataForm" component={UserDataForm} />
-              <Stack.Screen name="DietPlans" component={DietPlans} />
-              <Stack.Screen name="WorkoutTrainers" component={WorkoutTrainers} />
-              <Stack.Screen name="ClothingStore" component={ClothingStore} />
-              <Stack.Screen name="SupplementStore" component={SupplementStore} />
-
-              <Stack.Screen name="CommunityTab" component={Community} />
-              <Stack.Screen name="CommentsScreen" component={CommentsScreen} />
-
-              <Stack.Screen name="DietitianProfile" component={DietitianProfile} />
-              <Stack.Screen name="TrainerProfile" component={TrainerProfile} />
-              <Stack.Screen name="FAQ" component={FAQ} />
-              <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
-              <Stack.Screen name="HelpAndSupportScreen" component={HelpAndSupportScreen} />
-              <Stack.Screen name="PaidPlansScreen" component={PaidPlansScreen} />
-              <Stack.Screen name="LabTestsList" component={LabTestsList} />
-              <Stack.Screen name="EditProfile" component={EditProfile} />
-
-              <Stack.Screen name="FetchSelectedPlan" component={FetchSelectedPlan} />
-
-
-              <Stack.Screen name="AccountInfo" component={AccountInfo} />
-              <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} />
-
-              <Stack.Screen name="BMICalculator" component={BMICalculator} />
-              <Stack.Screen name="BodyFatCalculator" component={BodyFatCalculator} />
-              <Stack.Screen name="CalorieCalculator" component={CalorieCalculator} />
-
-            </Stack.Navigator>
-          </NavigationContainer>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName={initialRoute}
+          >
+            {user ? (
+              <>
+                <Stack.Screen
+                  name="Main"
+                  component={MainTabNavigator}
+                  listeners={({ route }) => ({
+                    state: () => trackCurrentRoute(route.name),
+                  })}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen
+                  name="LoginStack1"
+                  component={LoginStack}
+                  listeners={({ route }) => ({
+                    state: () => trackCurrentRoute(route.name),
+                  })}
+                />
+                <Stack.Screen
+                  name="SignupStack1"
+                  component={SignupStack}
+                  listeners={({ route }) => ({
+                    state: () => trackCurrentRoute(route.name),
+                  })}
+                />
+              </>
+            )}
+            {/* Other screens */}
+            <Stack.Screen name="LoginStack" component={LoginStack} />
+            <Stack.Screen name="UserDataForm" component={UserDataForm} />
+            <Stack.Screen name="TrainerInteractionScreen" component={TrainerInteractionScreen} />
+            <Stack.Screen name="TrainerMealsComponent" component={TrainerMealsComponent} />
+            <Stack.Screen name="ClientList" component={ClientList} />
+            <Stack.Screen name="DietPlans" component={DietPlans} />
+            <Stack.Screen name="WorkoutTrainers" component={WorkoutTrainers} />
+            <Stack.Screen name="ClothingStore" component={ClothingStore} />
+            <Stack.Screen name="SupplementStore" component={SupplementStore} />
+            <Stack.Screen name="CommunityTab" component={Community} />
+            <Stack.Screen name="CommentsScreen" component={CommentsScreen} />
+            <Stack.Screen name="DietitianProfile" component={DietitianProfile} />
+            <Stack.Screen name="TrainerProfile" component={TrainerProfile} />
+            <Stack.Screen name="FAQ" component={FAQ} />
+            <Stack.Screen name="BookTest" component={BookTest} />
+            <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
+            <Stack.Screen name="HelpAndSupportScreen" component={HelpAndSupportScreen} />
+            <Stack.Screen name="PaidPlansScreen" component={PaidPlansScreen} />
+            <Stack.Screen name="LabTestsList" component={LabTestsList} />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="FetchSelectedPlan" component={FetchSelectedPlan} />
+            <Stack.Screen name="AccountInfo" component={AccountInfo} />
+            <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} />
+            <Stack.Screen name="BMICalculator" component={BMICalculator} />
+            <Stack.Screen name="BodyFatCalculator" component={BodyFatCalculator} />
+            <Stack.Screen name="CalorieCalculator" component={CalorieCalculator} />
+            <Stack.Screen name="StripeWebView" component={StripeWebViewScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 }
+

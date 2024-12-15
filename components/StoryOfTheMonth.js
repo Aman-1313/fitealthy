@@ -8,11 +8,7 @@ export default function StoryOfTheMonth() {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const toggleDescription = () => {
       setShowFullDescription(!showFullDescription);
-    };
-
-
-
-
+  };
   useEffect(() => {
     const fetchStory = async () => {
       try {

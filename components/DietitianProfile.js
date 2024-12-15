@@ -30,7 +30,7 @@ export default function DietitianProfile({ route, navigation }) {
           if (isAlreadyClient) {
             navigation.navigate("TrainerInteractionScreen",  { trainerId: dietitian.id, userId: userId });
           } else {
-            alert('Choose a Plan!');
+
             navigation.navigate("PaidPlansScreen", { trainer: dietitian }); // Navigate to the Paid Plans screen
           }
         } catch (error) {

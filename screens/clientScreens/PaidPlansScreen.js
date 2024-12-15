@@ -40,7 +40,7 @@ export default function PaidPlansScreen({ route, navigation }) {
 
      try {
          // User and Trainer Document References
-         const userDocRef = doc(db, 'users', userId);
+         {/*const userDocRef = doc(db, 'users', userId);
          const trainerDocRef = doc(db, 'trainers', trainer.id);
          const userDoc = await getDoc(userDocRef);
          const trainerDoc = await getDoc(trainerDocRef);
@@ -99,8 +99,16 @@ export default function PaidPlansScreen({ route, navigation }) {
              selectedPlan: selectedPlanDetails
          });
 
-         alert('You have successfully booked a session!');
-         navigation.navigate("HomeTab");
+         alert('You have successfully booked a session!');*/}
+         if(selectedDuration.link){
+         if(selectedDuration.duration==8){
+            navigation.navigate('StripeWebView', {link: selectedDuration.link})
+         }else if(selectedDuration.duration==24){
+            navigation.navigate('StripeWebView', {link: selectedDuration.link})
+         }else{
+            navigation.navigate('StripeWebView', {link: selectedDuration.link})
+         }}
+
      } catch (error) {
          console.error("Error booking session:", error);
          alert("There was an error booking the session. Please try again.");
@@ -176,10 +184,10 @@ export default function PaidPlansScreen({ route, navigation }) {
 
   const handleDurationChange = (planId, duration) => {
     const updatedPrice = paidPlans.find(plan => plan.id === planId)?.durationDetails[duration]?.price || 0;
-
+    const updatedLink = paidPlans.find(plan => plan.id === planId)?.durationDetails[duration]?.link || '';
     setSelectedDurations(prevState => ({
       ...prevState,
-      [planId]: { duration, price: updatedPrice }
+      [planId]: { duration, price: updatedPrice, link: updatedLink }
     }));
   };
 

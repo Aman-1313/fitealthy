@@ -5,7 +5,8 @@ import { TextInput, Button, Text } from 'react-native-paper';
 import { auth, db } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword, sendEmailVerification  } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-
+import firebase from 'firebase/app';
+import 'firebase/auth'; // Import Firebase auth
 const { width } = Dimensions.get('window');
 
 export default function SignupScreen({ navigation }) {
@@ -37,8 +38,6 @@ export default function SignupScreen({ navigation }) {
           'Verify Your Email',
           'A verification email has been sent to your email address. Please verify your email to log in.'
       );
-
-      Alert.alert('Success', 'Logged in successfully!');
       setUsername('');
       setEmail('');
       setPassword('');
@@ -51,50 +50,14 @@ export default function SignupScreen({ navigation }) {
       setLoading(false);
     }
   };
-//  const handleSignup = async () => {
-//    if (password !== confirmPassword) {
-//      setError('Passwords do not match');
-//      return;
-//    }
-//    setLoading(true);
-//    try {
-//      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-//      const user = userCredential.user;
-//
-//      await setDoc(doc(db, 'users', user.uid), {
-//        email: user.email,
-//        createdAt: new Date(),
-//        username: username,
-//      });
-//
-//      // Send verification email
-//      await sendEmailVerification(user);
-//      Alert.alert(
-//        'Verify Your Email',
-//        'A verification email has been sent to your email address. Please verify your email to log in.'
-//      );
-//
-//      // Clear input fields
-//      setUsername('');
-//      setEmail('');
-//      setPassword('');
-//      setConfirmPassword('');
-//
-//      // Navigate to login screen
-//      navigation.navigate('Login');
-//    } catch (err) {
-//      setError(err.message);
-//    } finally {
-//      setLoading(false);
-//    }
-//  };
+
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.innerContainer}>
           <View style={styles.logoContainer}>
-            <Image source={require('../../assets/png/logo-no-background.png')} style={styles.logo} />
+            <Image source={require('../../assets/png/logo-short.jpeg')} style={styles.logo} />
           </View>
           <Text style={styles.title}>Sign Up</Text>
           <ScrollView style={styles.scrollContainer}>
@@ -131,7 +94,7 @@ export default function SignupScreen({ navigation }) {
             <Button mode="contained" onPress={handleSignup} loading={loading} style={styles.button}>
               Sign Up
             </Button>
-            <Button mode="text" onPress={() => navigation.navigate('Login')} style={styles.toggleButton}>
+            <Button mode="text" onPress={() => navigation.navigate('LoginStack')} style={styles.toggleButton}>
               Already have an account? Login
             </Button>
 
@@ -162,10 +125,12 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     marginTop: 10,
+    justifyContent: 'center',
     paddingHorizontal: 16,
   },
   scrollContainer: {
     flexGrow: 1,
+    margin: 10,
   },
   title: {
     fontSize: 32,

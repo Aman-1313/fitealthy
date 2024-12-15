@@ -231,6 +231,7 @@ const Community = ({ navigation }) => {
             <Text style={styles.appTitle}>COMMUNITY</Text>
         </View>
 
+
         {showUserPosts && (<UserProfileScreen userId={selectedUserId}  />)}
         {/* Conditionally render the post creation container */}
         {isCreatingPost && (
@@ -300,7 +301,8 @@ const Community = ({ navigation }) => {
         )}
 
         {/* filter  post logic */}
-       {!showUserPosts && ( <View horizontal  style={styles.categoryFilterContainer}>
+       {!showUserPosts &&
+       ( <View horizontal  style={styles.categoryFilterContainer}>
              <Button
                mode={filterCategory === "text" }
                onPress={() => setFilterCategory('All')}
@@ -328,7 +330,8 @@ const Community = ({ navigation }) => {
              >
                #General
              </Button>
-       </View>)}
+            </View>
+       )}
         {/* Comments Modal */}
        <CommentsModal
          visible={isCommentsModalVisible}
@@ -378,30 +381,30 @@ const Community = ({ navigation }) => {
             </Card>
           ))}
         </ScrollView>
-        <View style={styles.toggleContainer}>
-                  <TouchableOpacity
-                  //onPress={() => navigation.navigate('UserProfileScreen', { userId: auth.currentUser.uid })}
-                    onPress={() => setShowUserPosts(false)}
-                    style={styles.profileButton}
-                  >
-                    <Ionicons name="home-outline" size={30} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                  //onPress={() => navigation.navigate('UserProfileScreen', { userId: auth.currentUser.uid })}
-                    onPress={() => setIsCreatingPost(true)}
-                    style={styles.profileButton}
-                  >
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity
+            //onPress={() => navigation.navigate('UserProfileScreen', { userId: auth.currentUser.uid })}
+              onPress={() => setShowUserPosts(false)}
+              style={styles.profileButton}
+            >
+              <Ionicons name="planet-outline" size={30} color="#6200ea" />
+            </TouchableOpacity>
+            <TouchableOpacity
+            //onPress={() => navigation.navigate('UserProfileScreen', { userId: auth.currentUser.uid })}
+              onPress={() => setIsCreatingPost(true)}
+              style={styles.profileButton}
+            >
 
-                    <Ionicons name="add-circle-outline" size={30} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    //onPress={() => navigation.navigate('UserProfileScreen', { userId: auth.currentUser.uid })}
-                    onPress={() => showOtherProfile(auth.currentUser.uid)}
-                    style={styles.profileButton}
-                  >
-                    <Ionicons name="person-circle-outline" size={30} color="black" />
-                  </TouchableOpacity>
-                </View>
+              <Ionicons name="add-circle-outline" size={30} color="#6200ea" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              //onPress={() => navigation.navigate('UserProfileScreen', { userId: auth.currentUser.uid })}
+              onPress={() => showOtherProfile(auth.currentUser.uid)}
+              style={styles.profileButton}
+            >
+              <Ionicons name="person-circle-outline" size={30} color="#6200ea" />
+            </TouchableOpacity>
+          </View>
       </View>
     </Provider>
   );
@@ -411,7 +414,8 @@ const styles = StyleSheet.create({
   container: {
       flex: 1,
       backgroundColor: '#fff',
-      padding: 15,
+      paddingHorizontal: 15,
+      paddingBottom:6,
   },
   appbar: {
     height: 60,
@@ -439,7 +443,7 @@ const styles = StyleSheet.create({
   },
   createPostContainer: {
     marginVertical: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f2f2',
     borderRadius: 8,
     padding: 16,
     elevation: 3,
@@ -509,7 +513,7 @@ const styles = StyleSheet.create({
     },
   postCard: {
     margin: 8,
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f2f2',
     borderRadius: 8,
     elevation: 3,
     borderWidth: 1,
@@ -551,12 +555,18 @@ const styles = StyleSheet.create({
     color: '#457b9d',
   },
   toggleContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginHorizontal:8,
+    padding:10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#000',
+     backgroundColor: '#f2f2f2',
   },
   profileButton: {
     marginHorizontal:25,
+
   },
   editButton: {
     flex: 1,

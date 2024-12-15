@@ -56,7 +56,7 @@ const AccountInfoScreen = ({ navigation }) => {
   const handleSignOut = async () => {
     try {
       await auth.signOut();
-      navigation.navigate('Login');
+      navigation.navigate('LoginStack', {screen: 'Login'});
     } catch (error) {
       console.error("Sign-out error:", error);
     }

@@ -140,7 +140,7 @@ const EditProfile = ({ navigation }) => {
   const handleLogout = () => {
     auth.signOut()
       .then(() => {
-        navigation.replace('Login'); // Navigate to the login screen after successful logout
+        navigation.replace('LoginStack'); // Navigate to the login screen after successful logout
       })
       .catch((error) => {
         console.error('Error logging out: ', error);

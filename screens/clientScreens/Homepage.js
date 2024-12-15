@@ -10,9 +10,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import StoryOfTheMonth from '../../components/StoryOfTheMonth';
 import ContactUs from '../../components/ContactUs';
 
-const HomePage = ({ navigation, route }) => {
+const HomePage = ({ navigation}) => {
 
-  const { username, userId } = route.params;
+  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
 
   const [userData, setUserData] = useState(null);
   const [bmi, setBmi] = useState(null);
@@ -21,15 +22,20 @@ const HomePage = ({ navigation, route }) => {
 
   const fetchUserData = async () => {
     try {
-
-      const userDoc = await getDoc(doc(db, 'users', userId));
+      const user = auth.currentUser;
+      setUserId(user.uid);
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (userDoc.exists()) {
         const data = userDoc.data();
         setUserData(data);
+        if(!data.height){
+            navigation.navigate('UserDataForm');
+        }
         const heightInMeters = data.height / 100;
         const calculatedBmi = data.weight / (heightInMeters * heightInMeters);
         setBmi(calculatedBmi.toFixed(2));
         setBmiInterpretation(getBmiInterpretation(calculatedBmi));
+        setUsername(data.username)
       } else {
         console.log('No such document!');
       }
@@ -78,34 +84,44 @@ const HomePage = ({ navigation, route }) => {
           >
               <Ionicons name="menu" size={30} color="#6200ea" />
           </TouchableOpacity>
-          <Text style={styles.appTitle}>ALPHA</Text>
+          <Text style={styles.appTitle}>DASHBOARD</Text>
       </View>
       <Text style={styles.greeting}>{username ? `Welcome, ${username.toUpperCase()}!` : 'Welcome!'}</Text>
-      {userData && (
-        <View style={styles.bmiContainer}>
-          <Text style={styles.bmiText}>Your BMI: {bmi}</Text>
-          <Text style={styles.bmiInterpretation}>{bmiInterpretation}</Text>
-          <Button mode="contained-tonal" style={styles.button} onPress={() => navigation.navigate("BMICalculator")}> Re-Calculate BMI </Button>
+     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScrollContainer}>
+       <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('DietPlans')}>
+         <Image source={require('../../assets/png/nutrition.jpg')} style={styles.horizontalCardImage} />
+         <View style={styles.horizontalCardOverlay}>
+           <Text style={styles.horizontalCardTitle}>Certified Dietitians</Text>
+         </View>
+       </TouchableOpacity>
+
+       <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('SupplementStore')}>
+         <Image source={require('../../assets/png/suppliment.jpg')} style={styles.horizontalCardImage} />
+         <View style={styles.horizontalCardOverlay}>
+           <Text style={styles.horizontalCardTitle}>Alpha Supplement Store</Text>
+         </View>
+       </TouchableOpacity>
+     </ScrollView>
+
+        <View style={styles.testContainer}>
+          <Card onPress={() => handleNavigation('BookTest')} style={styles.testCard}>
+          <View style={styles.imageWrapper}>
+            <Image source={require('../../assets/png/doctor.png')} style={styles.testImage} />
+            <View style={styles.overlay}>
+              <Text style={styles.testTitle}>REGULAR CHECK-UP</Text>
+              <Text style={styles.description1}>Book a full body check-up at your home.</Text>
+               <Button mode="contained" onPress={() => navigation.navigate("BookTest")} style={styles.butt}>
+                 Book a Test
+               </Button>
+            </View>
+          </View>
+          </Card>
         </View>
-      )}
+        <StoryOfTheMonth/>
 
-       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScrollContainer}>
-         <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('DietPlans')}>
-           <Image source={require('../../assets/png/nutrition.jpg')} style={styles.horizontalCardImage} />
-           <View style={styles.horizontalCardOverlay}>
-             <Text style={styles.horizontalCardTitle}>Certified Dietitians</Text>
-           </View>
-         </TouchableOpacity>
 
-         <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('SupplementStore')}>
-           <Image source={require('../../assets/png/suppliment.jpg')} style={styles.horizontalCardImage} />
-           <View style={styles.horizontalCardOverlay}>
-             <Text style={styles.horizontalCardTitle}>Alpha Supplement Store</Text>
-           </View>
-         </TouchableOpacity>
-       </ScrollView>
 
-       <StoryOfTheMonth/>
+
       <ContactUs/>
       {/*<View style={styles.labTestContainer}>
           <Image source={require('../../../assets/png/test.jpg')} style={styles.labTestBackgroundImage} />
@@ -243,9 +259,9 @@ const styles = StyleSheet.create({
       paddingHorizontal: 10, // Horizontal padding
     },
     button: {
-      marginTop: 12, // Spacing above the button
-      width: '100%', // Full width for button
-      paddingVertical: 12, // Padding for button
+      marginVertical: 8,
+      backgroundColor: "#6200ea",
+      borderRadius: 4,
     },
   scrollContainer: {
     marginVertical: 10,
@@ -319,43 +335,56 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: '#555',
   },
-  labTestContainer: {
-      height: 180, // Fixed height to control image size
-      borderRadius: 10,
-      overflow: 'hidden',
-      position: 'relative',
-      marginVertical: 10,
-    },
-    labTestBackgroundImage: {
-      width: '100%',
-      height: '100%',
-      resizeMode: 'cover',
-      position: 'absolute',
-    },
-    labTestOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.4)', // Dark overlay for readability
-      justifyContent: 'center',
-      paddingHorizontal: 10,
-    },
-    labTestTitle: {
-      fontSize: 24,
-      fontFamily: 'CustomFont-Bold',
-      color: '#fff',
-      textAlign: 'left',
-      marginBottom: 5,
-    },
-
-    labTestDescription: {
-      fontSize: 12,
-      color: '#fff',
-      textAlign: 'left',
-
-    },
+  testContainer: {
+    padding: 16,
+    width:'100%',
+    backgroundColor: '#fff',
+  },
+  testCard: {
+    backgroundColor: '#fff',
+  },
+  imageWrapper: {
+    position: 'relative',
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+  },
+  testImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius: 10,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Semi-transparent black overlay
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 10,
+  },
+  testTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  description1: {
+    fontSize: 14,
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  butt: {
+    marginVertical: 8,
+    backgroundColor: "#6200ea",
+    borderRadius: 4,
+  },
 });
 
 export default HomePage;

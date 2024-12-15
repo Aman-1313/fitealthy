@@ -82,7 +82,7 @@ export default function LoginScreen({ navigation }) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.innerContainer}>
           <View style={styles.logoContainer}>
-            <Image source={require('../../assets/png/logo-no-background.png')} style={styles.logo} />
+            <Image source={require('../../assets/png/logo-short.jpeg')} style={styles.logo} />
           </View>
           <Text style={styles.title}>Login</Text>
 
@@ -110,14 +110,14 @@ export default function LoginScreen({ navigation }) {
           </Button>
 
           {/* Link to Signup */}
-          <Button mode="text" onPress={() => navigation.navigate('Signup')} style={styles.toggleButton}>
+          <Button mode="text" onPress={() => navigation.navigate('SignupStack')} style={styles.toggleButton}>
             Don't have an account? Sign up
           </Button>
 
-          {/* New Button for Trainer Login */}
+          {/* New Button for Trainer Login
           <Button mode="text" onPress={() => navigation.navigate('TrainerLoginScreen')} style={styles.trainerButton}>
             Are you a trainer? Login here
-          </Button>
+          </Button>*/}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
