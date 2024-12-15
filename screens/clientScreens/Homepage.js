@@ -87,6 +87,9 @@ const HomePage = ({ navigation}) => {
           <Text style={styles.appTitle}>DASHBOARD</Text>
       </View>
       <Text style={styles.greeting}>{username ? `Welcome, ${username.toUpperCase()}!` : 'Welcome!'}</Text>
+      <Button mode="contained" onPress={() => navigation.navigate("MentalHealth")} style={styles.butt}>
+        Book a Test
+      </Button>
      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScrollContainer}>
        <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('DietPlans')}>
          <Image source={require('../../assets/png/nutrition.jpg')} style={styles.horizontalCardImage} />

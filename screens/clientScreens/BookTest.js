@@ -339,7 +339,7 @@ export default function BookTest({ navigation }) {
                   <DateTimePicker
                     value={new Date()}
                     mode="time"
-                    display="default"
+                    display="spinner"
                     onChange={onTimeChange}
                   />
                 )}

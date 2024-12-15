@@ -23,6 +23,7 @@ import EditProfileTrainer from './screens/trainerScreens/EditProfileTrainer';
 import StripeWebViewScreen from './screens/clientScreens/StripeWebViewScreen';
 import Homepage from './screens/clientScreens/Homepage';
 import BookTest from './screens/clientScreens/BookTest';
+import MentalHealth from './screens/clientScreens/MentalHealth';
 import DietPlans from './screens/clientScreens/DietPlans'; // Add these components
 import WorkoutTrainers from './screens/WorkoutTrainers';
 import ClothingStore from './screens/ClothingStore';
@@ -339,6 +340,7 @@ export default function App() {
             <Stack.Screen name="BodyFatCalculator" component={BodyFatCalculator} />
             <Stack.Screen name="CalorieCalculator" component={CalorieCalculator} />
             <Stack.Screen name="StripeWebView" component={StripeWebViewScreen} />
+            <Stack.Screen name="MentalHealth" component={MentalHealth} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>
