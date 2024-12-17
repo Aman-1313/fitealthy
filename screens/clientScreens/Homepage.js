@@ -87,9 +87,7 @@ const HomePage = ({ navigation}) => {
           <Text style={styles.appTitle}>DASHBOARD</Text>
       </View>
       <Text style={styles.greeting}>{username ? `Welcome, ${username.toUpperCase()}!` : 'Welcome!'}</Text>
-      <Button mode="contained" onPress={() => navigation.navigate("MentalHealth")} style={styles.butt}>
-        Book a Test
-      </Button>
+      
      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScrollContainer}>
        <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('DietPlans')}>
          <Image source={require('../../assets/png/nutrition.jpg')} style={styles.horizontalCardImage} />
@@ -97,7 +95,12 @@ const HomePage = ({ navigation}) => {
            <Text style={styles.horizontalCardTitle}>Certified Dietitians</Text>
          </View>
        </TouchableOpacity>
-
+       <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('MentalHealth')}>
+         <Image source={require('../../assets/png/mental.jpg')} style={styles.horizontalCardImage} />
+         <View style={styles.horizontalCardOverlay}>
+           <Text style={styles.horizontalCardTitle}>Mental Health Helpline</Text>
+         </View>
+       </TouchableOpacity>
        <TouchableOpacity style={styles.horizontalCard} onPress={() => handleNavigation('SupplementStore')}>
          <Image source={require('../../assets/png/suppliment.jpg')} style={styles.horizontalCardImage} />
          <View style={styles.horizontalCardOverlay}>
@@ -236,36 +239,6 @@ const styles = StyleSheet.create({
     color: '#333',
     fontFamily: 'CustomFont',
   },
-   bmiContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#f9f9f9', // Light background color for contrast
-      padding: 20,
-      borderRadius: 10, // Rounded corners
-      elevation: 5, // Shadow effect
-      marginVertical: 16, // Margin around the container
-      borderWidth: 1,  // Adds a border to the card
-      borderColor: '#000',
-    },
-    bmiText: {
-      fontSize: 28, // Font size for BMI display
-      fontWeight: 'bold', // Bold font for emphasis
-      color: '#4CAF50', // Green color for positivity
-      marginBottom: 8, // Spacing below the BMI text
-    },
-    bmiInterpretation: {
-      fontSize: 18, // Font size for interpretation text
-      color: '#555', // Dark gray color for readability
-      textAlign: 'center', // Centered text
-      marginVertical: 10,
-      paddingHorizontal: 10, // Horizontal padding
-    },
-    button: {
-      marginVertical: 8,
-      backgroundColor: "#6200ea",
-      borderRadius: 4,
-    },
   scrollContainer: {
     marginVertical: 10,
     flexDirection: 'row',
