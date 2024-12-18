@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback  } from 'react';
-import {ScrollView, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {ScrollView, FlatList, View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, Card, Title, Paragraph, Button } from 'react-native-paper';
 import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebaseConfig'; // Assuming these are initialized
 import AssignedTrainer from '../../components/AssignedTrainer';
 import DietScreen from './DietScreen';
+import GenerateDietPlan from './GenerateDietPlan';
 import AssignDietScreen from '../trainerScreens/AssignDietScreen';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -130,7 +132,19 @@ export default function PaidFeaturesScreen({navigation}) {
           console.error('Error fetching trainer data:', error);
       }
   };
-
+  const renderHeader = () => {
+    return (
+      <View style={styles.appbar}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.navigate('AccountInfo')}
+        >
+          <Ionicons name="menu" size={30} color="#6200ea" />
+        </TouchableOpacity>
+        <Text style={styles.appTitle}>MY PLAN</Text>
+      </View>
+    );
+  };
   const renderStars = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -159,18 +173,31 @@ export default function PaidFeaturesScreen({navigation}) {
 
   if (!isPaid) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Restricted Content</Text>
-        <Text style={styles.message}>
-          You need to subscribe to access these exclusive features.
-        </Text>
-        <TouchableOpacity
-          style={styles.subscribeButton}
-          onPress={() => navigation.navigate('DietPlans')} // Navigate to payment screen
-        >
-          <Text style={styles.buttonText}>Subscribe Now</Text>
-        </TouchableOpacity>
-      </View>
+      <FlatList
+            data={[1]} // Just a placeholder, FlatList needs data array
+            keyExtractor={(item) => item.toString()}
+            ListHeaderComponent={renderHeader}
+            renderItem={({ item }) => (
+              <ScrollView style={styles.container} nestedScrollEnabled={true}>
+                <View style={styles.card}>
+                  <Text style={styles.title}>Restricted Content</Text>
+                  <Text style={styles.message}>
+                    You need to subscribe to access these exclusive features.
+                  </Text>
+                  <Button
+                    mode="contained"
+                    onPress={() => navigation.navigate('DietPlans')}
+                    labelStyle={{ color: '#fff', fontFamily: 'CustomFont-Bold' }}
+                    style={styles.subscribeButton}
+                  >
+                    Choose Subscription
+                  </Button>
+                </View>
+                <GenerateDietPlan />
+              </ScrollView>
+            )}
+            contentContainerStyle={styles.contentContainerStyle} // Ensure padding and layout
+          />
     );
   }
 
@@ -217,7 +244,6 @@ export default function PaidFeaturesScreen({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-        flex: 1,
         backgroundColor: '#fff',
         padding: 15,
   },
@@ -240,10 +266,19 @@ const styles = StyleSheet.create({
       color: '#6200ea',                 // Title color
       fontFamily: 'CustomFont-Bold',
   },
+  card: {
+        backgroundColor: '#ffffff',
+        borderRadius: 12,
+        elevation: 4,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: '#000',
+        margin:15,
+  },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 20,
+    fontFamily: 'CustomFont-Bold',
+    marginVertical: 10,
   },
   starContainer: {
     flexDirection: 'row',
@@ -287,13 +322,11 @@ const styles = StyleSheet.create({
   },
   subscribeButton: {
     backgroundColor: '#6200ea',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
     borderRadius: 8,
+    marginTop: 10,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+  message: {
+    fontFamily: 'CustomFont',
   },
+
 });

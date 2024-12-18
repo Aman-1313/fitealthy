@@ -102,11 +102,15 @@ export default function MentalHealth() {
                 : styles.receivedMessageContainer
             }
           >
-            <View
+          {item.sender !== 'user' && (
+                  <Ionicons name="person-circle-outline" size={40} color="gray" style={styles.avatar} />
+                )}
+          <View
               style={
                 item.sender === 'user' ? styles.sentMessage : styles.receivedMessage
               }
             >
+
               <Text style={styles.messageText}>
                 {item.text}
               </Text>
@@ -212,7 +216,8 @@ const styles = StyleSheet.create({
     maxWidth: '70%',
   },
   messageText: {
-    fontSize: 16,
+    fontSize: 14,
+    fontFamily: 'CustomFont',
   },
   mediaImage: {
     width: 150,
@@ -231,19 +236,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   modalBackground: {
-      flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.8)',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    modalImage: {
-      width: '90%',
-      height: '80%',
-      resizeMode: 'contain',
-    },
-    modalCloseButton: {
-      position: 'absolute',
-      top: 40,
-      right: 20,
-    },
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalImage: {
+    width: '90%',
+    height: '80%',
+    resizeMode: 'contain',
+  },
+  modalCloseButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+  },
 });

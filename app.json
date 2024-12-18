@@ -2,7 +2,7 @@
   "expo": {
     "name": "fitealthy",
     "slug": "fitealthy",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -17,6 +17,14 @@
       "bundleIdentifier": "com.aps6mtr.fitealthy",
       "config": {
         "googleMapsApiKey": "AIzaSyA2j64TE-eDVL98WHNlQKVMJjT9eogz2K8"
+      },
+      "infoPlist": {
+        "NSHealthShareUsageDescription": "Health data sharing is currently not in use. Future updates may include features for fitness tracking.",
+        "NSHealthUpdateUsageDescription": "Health data updating is currently not in use. Future updates may include features for fitness tracking.",
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to provide personalized fitness and health insights."
+      },
+      "entitlements": {
+        "aps-environment": "production"
       }
     },
     "android": {
